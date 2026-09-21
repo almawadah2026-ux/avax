@@ -448,3 +448,74 @@ MIT — للبحث والتطوير. **لا يُستخدم لتنفيذ تداو
 `CONSTITUTION.md` — المادتان 0.4 و 2.2
 
 </div>
+
+---
+
+## الواجهة الخلفية والنشر
+
+### مصادر البيانات
+
+| المصدر | ما يوفّره | الطبقة |
+|---|---|---|
+| **CoinMarketCap** | السعر، رأس المال السوقي، التغيّرات، **هيمنة BTC** والسياق الكلي | طبقة 2 (سوق) |
+| **CoinGecko** | السلسلة الزمنية (365 يوماً) — احتياطي معلن | طبقة 2 (أعلى/أدنى مُقدَّران) |
+| **Binance Futures** | معدل التمويل والفائدة المفتوحة | طبقة 2 |
+| **alternative.me** | مؤشر الخوف والطمع | طبقة 5 (معنويات) |
+| **مولّد اصطناعي** | للتدريب والاختبار الحتمي | طبقة 3 (لا 1/2) |
+
+**عند فشل مصدر:** يُعلن السبب ولا يُختلق رقم (المادة 3.3). الحقول غير المتاحة
+تُدرَج في missing_fields، **ويرفض الوكلاء المرتبطون بها إصدار رأي** (المادة 9.1).
+
+> ملاحظة تشغيلية: خطة CoinMarketCap المجانية **لا تشمل** OHLCV التاريخي (خطأ 1006)،
+> فيُجلب السلسلة من CoinGecko كاحتياطي معلن. Binance محجوب جغرافياً في بعض البيئات
+> فيُعلن فشله ويُستمر بلا تمويل.
+
+### قاعدة البيانات (Supabase)
+
+`
+snapshots ──┐
+            ├── desk_runs ──┬── agent_opinions ── evidence_items
+            │               ├── risk_verdicts
+            │               ├── decisions
+            │               ├── execution_plans
+            │               ├── compliance_reports
+            │               ├── post_decision_audits
+            │               └── journal_records   ← يُلحق فقط (trigger يمنع UPDATE)
+post_mortems (مستقل)        agent_weights (مستقل)
+`
+
+* **12 جدولاً + عرضان** (_run_summary لِلوحة المعاينة، _agent_accuracy).
+* **RLS مفعّل على كل الجداول**: قراءة عامة، وكتابة بـservice_role فقط.
+* **السجل غير قابل للتعديل على مستوى قاعدة البيانات** — trigger يرفض UPDATE/DELETE
+  (المادة 7.2). وهذا **أقوى** من سلسلة الهاش المحلية وحدها.
+
+### الأوامر
+
+`powershell
+# دورة على بيانات حيّة
+python -m avax_desk.cli --live
+
+# دورة + دفع إلى الواجهة الخلفية
+python -m avax_desk.cli --live --push
+
+# فحص اتصال قاعدة البيانات
+python -m avax_desk.cli --db-health
+
+# تطبيق المخطط (DDL عبر Management API)
+python tools/apply_schema.py
+
+# توليد لقطة كاملة للوكلاء الذكيين
+python tools/export_snapshot.py --live
+`
+
+### الأمان — إلزامي
+
+| القاعدة | السبب |
+|---|---|
+| service_role **لا يصل إلى المتصفح أبداً** | يتجاوز RLS بالكامل |
+| .env **لا يُدفع** | مُستثنى في .gitignore (مُتحقَّق منه بـgit check-ignore) |
+| الواجهة الأمامية تستخدم publishable فقط | قراءة محميّة بـRLS |
+| **دوّر المفاتيح دورياً** | أي سرّ يُكتب في محادثة أو سجل يُعدّ مكشوفاً |
+
+**تدوير المفاتيح:** GitHub → Settings/Developer settings · Supabase → Settings/API ·
+CoinMarketCap → Account/API.
