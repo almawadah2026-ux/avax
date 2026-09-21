@@ -1,0 +1,346 @@
+{
+  "agent_id": "11",
+  "thesis": "حكم مخاطري: المقترح البيعي المقدَّم لا يجوز اعتماده — الثقة 55.0 أدنى من الحد الأدنى غير القابل للتعديل 65 (المادة 5.3)، فالحجم المعتمد صفر؛ وسماحته التقديرية كانت 2.29% من رأس المال بخسارة قصوى 0.25% لو جاز.",
+  "evidence": [
+    {
+      "claim": "الثقة المقدَّمة 55.0 < الحد الأدنى 65.0 (المادة 5.3 — غير قابل للتعديل) ⇒ نقض آلي في محرك المخاطر",
+      "source": "risk/engine.py::RiskEngine.evaluate (سطر 154-157) + المقترح المُقدَّم",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "مستوى الإنذار 🟡: نظام تقلب «extreme» واكتمال بيانات 88.9% ⇒ تخفيض الحجم 50% (المادة 9.3)",
+      "source": "risk/engine.py::risk_level + features.vol_regime/completeness",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "القيد المُقيِّد للحجم المحسوب = fixed_fractional: $45,772.13 مقابل كيلي $62,500 وحد المركز $100,000 ومشاركة السوق $17,602,302",
+      "source": "scratch_risk11_final.py (إعادة حساب مستقلة من ohlcv_daily + Limits)",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "ATR14 = 0.6342 (5.462% من السعر) مطابق تماماً لإعادة الحساب من الشمعات — لكن مداه (high/low) مُقدَّر في data/live.py:142-149 كـh=c×(1+0.6r) وl=c×(1−0.6r)، و365/365 شمعة مداها الحقيقي يساوي الصيغة المشتقة من الإغلاقات وحدها",
+      "source": "src/avax_desk/data/live.py:142-149 (مقروء) + scratch_risk11_deep2.py",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "365/366 شمعة تخالف شرط OHLC (low فوق min(open,close) في 168، high دون max(open,close) في 197)، و365/365 شمعة فتحها = إغلاق سابقتها بالضبط",
+      "source": "scratch_risk11_deep2.py (تحقق مستقل من ohlcv_daily)",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "وقف الخسارة البيعي 2×ATR = 10.9237% = 2.188σ يومي(30d) و2.683σ يومي(365d) ⇒ الوقف المقيس المضاعف لا أضيق من بديل مقيس من الإغلاقات",
+      "source": "scratch_risk11_final.py (σ من ind.realized_vol وpstdev للإغلاقات)",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "medium",
+      "tier": 3
+    },
+    {
+      "claim": "VaR95 تاريخي -6.073% وCVaR95 -10.021% (نسبة الذيل 1.650) — وإعادة حساب مستقلة باصطلاح كمّي مختلف تعطي -6.409%/-10.241%",
+      "source": "indicators.value_at_risk + scratch_risk11_final.py",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "أسوأ يوم إغلاق-إغلاق في 366 شمعة = -26.51% (6.51σ) ⇒ يتجاوز وقف 2×ATR بمقدار 2.43× — الوقف ليس حداً صلباً",
+      "source": "scratch_risk11_final.py (من ohlcv_daily المُصدَّرة)",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "السبريد 6.0 ن.أ والعمق $3,037,345.68 لكل جهة وOBI=0.0 ليست قياسات سوق: live.py:157-160 يبنيها كـprice×0.9997/1.0003 و0.002×حجم24س ⇒ لا قياس عمق حقيقي متاح",
+      "source": "src/avax_desk/data/live.py:157-160 (مقروء)",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 3
+    },
+    {
+      "claim": "VRP = -95.38 وbasis = 10.95% مشتقان لا مقيسان: IV غائب (0) وbasis = تمويل×3×365 (live.py:197) — يحرم الاستشهاد بهما (المادة 3.3)",
+      "source": "data/snapshot_full.json derivatives + src/avax_desk/data/live.py:197",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "high",
+      "tier": 2
+    },
+    {
+      "claim": "المقترح مبني على رأي اتجاهي واحد (اتفاق 100% من n=1)؛ عتبة المادة 4.4 لا تُفعَّل إلا عند ≥5 آراء اتجاهية، فهي غير مُفعَّلة هنا وغياب التصديق ليس مخالفة — لكنه ليس تصديقاً",
+      "source": "law.py::flag_groupthink (سطر 355) + المقترح المُقدَّم",
+      "timestamp": "2026-09-21T01:11:53+00:00",
+      "strength": "medium",
+      "tier": 3
+    }
+  ],
+  "confidence": 82.0,
+  "horizon": "لحظي (صفر — الحكم على مقترح دخول فوري)",
+  "invalidation": "يُبطل هذا النقض ويصبح الحكم قابلاً للاعتماد إذا: (1) رُفعت ثقة المقترح إلى ≥65 بأدلة طبقة 1 أو 2 موثقة بطابع زمني، و(2) قُدّم وقف مشتق من قياس مدى حقيقي أو من تقلب الإغلاقات مصرَّحاً به، و(3) قُدّمت معاملات أداء مُجازة من الوكيل 09 (p، b) أو قُبل سقف كيلي 5% كبديل معلن، و(4) بقيت الخسارة اليومية <2% والتراجع <15% والسبريد ≤25 ن.أ وسيولة ADV كافية. أي إخلال بأحدها يعيد النقض فوراً.",
+  "dissent": "أقوى ما يخالف هذا النقض: (1) الحجم المحسوب 2.29% من رأس المال بخسارة قصوى 0.25% — أي أن الوضع المحاسبي آمن تماماً ولا خطر على رأس المال، فالنقض على درجة الإثبات لا على المخاطرة؛ و(2) الوقف المشتق من ATR أوسع (2.68σ) من بديل مقيس من الإغلاقات (2.0σ) — أي أن خلل قياس المدى يقلّص الحجم لا يضخّمه، فمن حيث الحجم وحده كان يمكن الاعتماد؛ و(3) المحرك نفسه يعطي $22,886.07 كمقترح سليم حسابياً، وحد المركز (10%) لم يُقترب، ولا حد قطاعي ولا سيولة ولا خسارة يومية مخروق — فالنقض يقوم على بند واحد. (4) وعليه: وكيل يخالفني يقول إن 55 ثقة «متوسطة» تكفي للمراقبة لا للدخول، وأن الامتناع (المادة 9.1) كان كافياً بدل النقض.",
+  "abstain": false,
+  "abstain_reason": null,
+  "risk_verdict": {
+    "verdict": "VETOED",
+    "target_id": "PROP-2026-0921-0111Z-bearish-1of1",
+    "equity": 1000000.0,
+    "alert_level": "yellow",
+    "limits": {
+      "max_daily_loss_pct": 2.0,
+      "max_drawdown_pct": 15.0,
+      "max_position_pct": 10.0,
+      "max_sector_pct": 25.0,
+      "min_confidence_entry": 65.0,
+      "max_adv_participation": 5.0,
+      "max_risk_per_trade_pct": 1.0,
+      "max_kelly_fraction": 0.5
+    },
+    "sizing": {
+      "method": "min(half-Kelly, fixed-fractional, caps) × مضاعف المستوى(9.3)",
+      "risk_per_trade_pct": 0.25,
+      "risk_budget_usd": 5000.0,
+      "stop_distance_usd": 1.268468,
+      "qty_fixed_fractional": 3941.762,
+      "kelly_raw": 0.125,
+      "kelly_half": 0.0625,
+      "kelly_half_cap5_contract_fallback": 0.05,
+      "binding_constraint": "fixed_fractional",
+      "candidates_usd": {
+        "kelly_cap30": 62500.0,
+        "kelly_cap5_contract": 50000.0,
+        "fixed_fractional": 45772.13,
+        "max_position_limit": 100000.0,
+        "sector_concentration_limit": 250000.0,
+        "market_participation_limit": 17602302.24,
+        "liquidity_depth_limit_FABRICATED": 607469.14
+      },
+      "computed_notional_usd_haircut_1.0": 22886.07,
+      "computed_notional_usd_haircut_0.5": 11443.03,
+      "qty_final": 0.0,
+      "notional_usd": 0.0,
+      "notional_pct": 0.0,
+      "max_loss_usd": 0.0,
+      "max_loss_pct": 0.0,
+      "max_loss_reference_if_approved_usd": 2500.0,
+      "max_loss_reference_if_approved_pct": 0.25,
+      "level_multiplier": 0.5,
+      "composed_multiplier_haircut_1.0": 0.5,
+      "composed_multiplier_haircut_0.5": 0.25
+    },
+    "var": {
+      "c95_1d_usd": -1389.86,
+      "c99_1d_usd": -2839.66,
+      "c95_1d_param_usd": -1621.49,
+      "method": "historical (365 عائد إغلاق-إغلاق) + parametric مرافق",
+      "notional_reference_usd": 22886.07
+    },
+    "cvar": {
+      "c95_1d_usd": -2293.46,
+      "c99_1d_usd": -4150.15,
+      "method": "historical expected-shortfall (المادة 7 §7: VaR بلا CVaR مرفوض)",
+      "tail_ratio_cvar_over_var_95": 1.6501
+    },
+    "risk_of_ruin": {
+      "estimate": 1.0,
+      "estimate_diffusion": 1.5967706997193824e-42,
+      "units_U": 400.0,
+      "mean_R": 0.1875,
+      "sd_R": 1.248437,
+      "method": "equal-bet (b=1) formula vs diffusion-approx — الفرق مُفسَّر",
+      "note": "الصيغة الكلاسيكية للرهان المتساوٍ تعطي RoR=1.0 لأن p=0.475<0.5 (خسارة في المتوسط عند 1:1)، وتقريب الانتشار يعطي ~1.6e-42 لأن العائد الفعلي 1:1.5 يعطي μ=+0.1875R مع U≈400. الفرق ليس خطأً بل فرق افتراض: الأول يتجاهل نسبة العائد والثاني يفترض مساراً مستمراً؛ والتقدير الواقعي أعلى من الانتشار لأن أسوأ يوم تاريخي −26.51% (6.5σ) يتجاوز الوقف 2.43×."
+    },
+    "ulcer_index": 68.208,
+    "max_drawdown_historical": -82.553,
+    "martin_ratio": null,
+    "stress_tests": [
+      {
+        "scenario": "drop_30pct_1d",
+        "loss_usd": -6865.82
+      },
+      {
+        "scenario": "drop_worst_historical_day_26.51pct",
+        "loss_usd": -6066.6,
+        "note": "أسوأ يوم إغلاق-إغلاق مقيس في 366 شمعة"
+      },
+      {
+        "scenario": "exchange_halt_1d_untradeable",
+        "loss_usd": -2285.2,
+        "note": "بلا قدرة خروج: الخسارة = حركة السوق (2σ)، والوقف لا يُنفَّذ"
+      },
+      {
+        "scenario": "bridge_exploit_tvl_40pct",
+        "loss_usd": -9154.43,
+        "note": "لا ينطبق على مركز سعري على منصة؛ يُسجَّل لأن الديسك لا يملك تدقيق جسر"
+      },
+      {
+        "scenario": "subnet_failure_sentiment_15pct",
+        "loss_usd": -3432.91
+      },
+      {
+        "scenario": "correlation_1_liquidation_cascade_1d",
+        "loss_usd": -6066.6,
+        "note": "ارتباط=1 وتمويل موجب 10.95% سنوياً ⇒ تصفية متسلسلة بلا تنويع"
+      },
+      {
+        "scenario": "short_squeeze_stop_hit_2ATR",
+        "loss_usd": -2500.0,
+        "note": "الخسارة عند ضربة وقف المركز البيعي (ارتفاع 2×ATR)"
+      }
+    ],
+    "counterparty_risk": [
+      {
+        "venue": "8 منصات مجمَّعة (Binance/CoinGecko)",
+        "type": "exchange",
+        "score": null,
+        "note": "لا تدقيق منصات مُقدَّم ⇒ لا قياس؛ تُطبَّق قاعدة العقد §4: خفض سقف المركز للنصف (10%→5%)"
+      },
+      {
+        "venue": "C-Chain contracts",
+        "type": "smart_contract",
+        "score": null,
+        "note": "المركز سعري لا في بروتوكول ⇒ لا مخاطرة عقود ذكية ملامسة في هذا المقترح"
+      },
+      {
+        "venue": "bridges",
+        "type": "bridge",
+        "score": null,
+        "note": "لا بيانات netflow جسر (bridge_netflow_7d_usd غائب) ⇒ لا قياس"
+      }
+    ],
+    "veto": {
+      "issued": true,
+      "veto_id": "VETO-2026-0921-0001",
+      "rule_broken": "5.3.min_confidence",
+      "severity": "critical",
+      "reason": "ثقة المقترح 55.0 أدنى من الحد الأدنى للدخول 65 (المادة 5.3 — غير قابل للتعديل). الحجم المحسوب قبل النقض $22,886.07 (2.289% من رأس المال) لا يُعتمد.",
+      "measured": 55.0,
+      "limit": 65.0,
+      "article_refs": [
+        "5.1",
+        "5.2",
+        "5.3",
+        "9.3"
+      ],
+      "override_allowed": false,
+      "remedy": "رفع ثقة المقترح إلى ≥65 بدليل من طبقة 1 أو 2 موثق بطابع زمني + حكم تحقق من الوكيل 09 + وقف مصرَّح بمصدره، ثم إعادة التقديم؛ أو الامتناع.",
+      "kill_switch": false,
+      "expires_at": "2026-09-21T01:11:53+00:00",
+      "recorded_by": "11"
+    },
+    "conditions": [
+      "الوقف: 2×ATR مضبوط من مدى مُقدَّر (live.py:142-149) لا مقيس ⇒ أي إعادة تقديم تُلزم بوقف من قياس مدى حقيقي أو من تقلب الإغلاقات (بديل 2σ = 1.1595 USD = 9.9851% بدل 10.9237%)",
+      "القيود الملزمة كلها سليمة: مركز 2.29%<10%، قطاعي 2.29%<25%، مشاركة سوق 0.00650%<5%، مخاطرة/صفقة 0.25%<1%، خسارة يومية 0<2%، تراجع 0<15% — النقض على بند الثقة وحده",
+      "لا التفاف بتقسيم المراكز: التعرّض الكلي المطلوب صفر ولا مراكز مفتوحة (المادة 8.7)",
+      "غياب معاملات الأداء (p، b) المُجازة من 09 ⇒ تطبيق عقد المدخلات §4: نصف كيلي مقيّد بـ5% (50,000$) — غير مُقيِّد لأن fixed_fractional أدنى منه",
+      "غياب تدقيق المنصات/الجسور ⇒ خفض سقف المركز للنصف إلى 5% — غير مُقيِّد لنفس السبب",
+      "السبريد 6 ن.أ والعمق وOBI حقول مُصنَّعة (live.py:157-160) ⇒ لا تُستشهد كقياس سيولة؛ القياس الوحيد الصالح للسيولة هو ADV30 = $352,046,045 (وحجم آخر شمعة $1,518,672,839)"
+    ],
+    "kill_switch_armed": true
+  },
+  "measurement_integrity": {
+    "bar_geometry": {
+      "bars_total": 366,
+      "bars_violating_ohlc": 365,
+      "low_above_min_oc": 168,
+      "high_below_max_oc": 197,
+      "open_equals_prev_close": 365,
+      "true_range_matches_close_only_formula": "365/365",
+      "source": "src/avax_desk/data/live.py:142-149",
+      "conclusion": "المدى (high/low) مُقدَّر من العوائد لا مقيس ⇒ ATR14 وADX14 وVWAP20 ومستويات الدعم/المقاومة مبنية على مدى غير مقيس. سلاسل الإغلاق والحجم حقيقية، ولذلك تقلب الإغلاقات وVaR/CVaR صالحة."
+    },
+    "unusable_fields": {
+      "variance_risk_premium": -95.38,
+      "basis_annualized_pct": "≡ تمويل×3×365 (live.py:197) — تكرار جبري لا أساس مقيس",
+      "order_book_imbalance": 0.0,
+      "bid_depth_usd": 3037345.68,
+      "ask_depth_usd": 3037345.68,
+      "spread_bps": 6.0,
+      "implied_vol_annual_pct": 0.0,
+      "rule": "المادة 3.3 — الصفر هنا غياب بيانات لا قياس صفري"
+    },
+    "substitution_check": {
+      "stop_from_2ATR_fabricated_range_pct": 10.9237,
+      "stop_from_2sigma_genuine_closes_pct": 9.9851,
+      "stop_from_2sigma_365d_pct": 8.1427,
+      "size_if_genuine_2sigma_stop": 25037.23,
+      "conclusion": "الوقف البديل المقيس أضيق بنسبة +9.40% ⇒ الحجم البديل أكبر بنفس النسبة (2.29%→2.50% من رأس المال)، والقيد المُقيِّد يبقى fixed_fractional. خلل القياس لا يضخّم الحجم، فلا يُستعمل كسبب نقض مستقل."
+    },
+    "quantile_convention_sensitivity": {
+      "var95_repo": -6.073,
+      "var95_recomputed_index17": -6.4085,
+      "cvar95_repo": -10.0212,
+      "cvar95_recomputed": -10.2406,
+      "note": "فرق 0.336 نقطة مئوية من اصطلاح اختيار العنصر (17 بدل 18) — حساسية منهجية تُعلن لا تُخفى"
+    }
+  },
+  "cross_references": {
+    "prior_cycle_same_vintage": {
+      "record": "journal/desk_journal.jsonl#sequence=5",
+      "decision_id": "DEC-14579E3D22",
+      "action": "LONG",
+      "proposal": {
+        "direction": "bullish",
+        "confidence": 69.85,
+        "agreement": 0.8,
+        "supporters": 4,
+        "opposers": 1
+      },
+      "risk_verdict": {
+        "approved": true,
+        "risk_level": "yellow",
+        "size_usd": 11468.74,
+        "binding": "fixed_fractional",
+        "stop_loss_pct": 10.899,
+        "quality_haircut": 0.5
+      },
+      "note": "المقترح الحالي (bearish | مؤيد واحد | ثقة 55) أضعف في كل معيار قياس مخاطري من المقترح المُسجَّل لنفس عائلة اللقطة (bullish | 4 مؤيدين | 69.85)."
+    },
+    "existing_fabrication_findings": [
+      {
+        "agent": "01",
+        "file": "reports/agent-01-market-structure-live-2026-09-21.json",
+        "timestamp": "2026-09-21T04:19:26+00:00",
+        "content": "365/366 شمعة تخالف شرط OHLC؛ ATR وBollinger من مدى مُشتق"
+      },
+      {
+        "agent": "02",
+        "file": "reports/agent-02-technical-analysis-live-2026-09-21.json",
+        "timestamp": "2026-09-21T04:19:47+00:00",
+        "content": "h/l مُصنَّعان في live.py:142-149؛ تحذير من الاستشهاد بمقاومة 12.1493"
+      },
+      {
+        "agent": "10",
+        "file": "reports/redteam-10-live-2026-09-21.md",
+        "timestamp": "2026-09-21T04:53:17+00:00",
+        "content": "التصنيع محصور في (h/l، دفتر الأوامر، حقول المدى/التمركز)؛ سلاسل الإغلاق والحجم وتقلب الإغلاقات تُعاد بالضبط"
+      }
+    ],
+    "note": "الوكيل 11 يتبنى القيد الذي فرضه الوكيل 10 على التعميم: العطب حقلي لا طبقي، فلا يُبنى نقض على «الملف كله غير قابل للقياس» (المادة 3.2 + 8.2)."
+  },
+  "verdict_summary": {
+    "verdict": "VETOED",
+    "approved": false,
+    "veto": true,
+    "risk_level": "yellow",
+    "position_size_usd": 0.0,
+    "computed_size_usd_before_veto": 22886.07,
+    "stop_loss_pct": 10.924,
+    "risk_per_trade_pct_computed": 0.25,
+    "binding_constraint": "fixed_fractional",
+    "veto_reasons_engine": [
+      "الثقة 55.0 أدنى من الحد الأدنى 65.0 (المادة 5.3)"
+    ],
+    "max_loss_authorized_usd": 0.0,
+    "engine_notes": [
+      "🟡 نظام تقلب «extreme» — تخفيض حجم المركز 50% (المادة 9.3)",
+      "حجم المركز محكوم بـ «fixed_fractional» (كيلي $62.5K | مخاطرة ثابتة $45.8K | حد المركز $100.0K | قطاعي $250.0K | مشاركة السوق $17602.3K)"
+    ],
+    "timestamp": "2026-09-21T01:11:53+00:00"
+  }
+}

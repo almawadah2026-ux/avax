@@ -1,0 +1,140 @@
+{
+  "ohlc_violations": {
+    "n": 366,
+    "bad_high": 197,
+    "bad_low": 168,
+    "bad_any": 365
+  },
+  "ohlc_formula_match_pct": 100.0,
+  "open_equals_prev_close_pct": 100.0,
+  "rv_close_to_close": {
+    "7": {
+      "ddof1": 153.74,
+      "ddof0": 142.34
+    },
+    "10": {
+      "ddof1": 138.21,
+      "ddof0": 131.12
+    },
+    "14": {
+      "ddof1": 130.28,
+      "ddof0": 125.54
+    },
+    "20": {
+      "ddof1": 110.64,
+      "ddof0": 107.84
+    },
+    "30": {
+      "ddof1": 95.38,
+      "ddof0": 93.78
+    },
+    "60": {
+      "ddof1": 80.87,
+      "ddof0": 80.2
+    },
+    "90": {
+      "ddof1": 72.44,
+      "ddof0": 72.04
+    },
+    "180": {
+      "ddof1": 67.51,
+      "ddof0": 67.32
+    },
+    "365": {
+      "ddof1": 78.96,
+      "ddof0": 78.86
+    }
+  },
+  "rv_last10": 138.21,
+  "rv_prev30": 60.76,
+  "ewma_reproduced": 120.5,
+  "garch_mle_full": {
+    "omega": 0.0,
+    "alpha": 0.965142,
+    "beta": 6e-06,
+    "persistence": 0.965149,
+    "sigma_ann_pct": 53.065986,
+    "negll": -991.49
+  },
+  "garch_mle_ex30": {
+    "alpha": 0.9993,
+    "beta": 0.0,
+    "persistence": 0.9993,
+    "sigma_ann_pct": 77.07
+  },
+  "invalid_range_estimators": {
+    "parkinson": 76.07,
+    "garman_klass": 65.76
+  },
+  "funding": {
+    "venues": 1,
+    "by_venue": [
+      {
+        "venue": "Binance (USDT-Perp)",
+        "rate_8h": 0.0001,
+        "apr_pct": 10.95
+      }
+    ],
+    "oi_weighted_apr": null,
+    "basis_is_duplicate_of_funding": true
+  },
+  "funding_cost": {
+    "apr_pct": 10.95,
+    "cost_7d_pct": 0.21,
+    "cost_30d_pct": 0.9
+  },
+  "oi_to_adv": {
+    "آخر شمعة": 0.0862,
+    "7 أيام": 0.171,
+    "30 يوماً": 0.3717,
+    "90 يوماً": 0.5406,
+    "30 يوماً قبل الطفرة": 0.5365
+  },
+  "oi_over_mcap_pct": 2.54,
+  "vrp_is_artifact": true,
+  "slippage_multiplier": null,
+  "liquidation_bands_estimated": [
+    {
+      "leverage": 5,
+      "mmr": 0.01,
+      "move_pct": 19.0,
+      "long_liq": 9.4058,
+      "short_liq": 13.8184
+    },
+    {
+      "leverage": 10,
+      "mmr": 0.005,
+      "move_pct": 9.5,
+      "long_liq": 10.509,
+      "short_liq": 12.7152
+    },
+    {
+      "leverage": 20,
+      "mmr": 0.01,
+      "move_pct": 4.0,
+      "long_liq": 11.1476,
+      "short_liq": 12.0766
+    },
+    {
+      "leverage": 25,
+      "mmr": 0.005,
+      "move_pct": 3.5,
+      "long_liq": 11.2057,
+      "short_liq": 12.0185
+    },
+    {
+      "leverage": 50,
+      "mmr": 0.005,
+      "move_pct": 1.5,
+      "long_liq": 11.4379,
+      "short_liq": 11.7863
+    },
+    {
+      "leverage": 100,
+      "mmr": 0.004,
+      "move_pct": 0.6,
+      "long_liq": 11.5424,
+      "short_liq": 11.6818
+    }
+  ]
+}

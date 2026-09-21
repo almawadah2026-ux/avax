@@ -1,0 +1,78 @@
+# ══════════════════════════════════════════════════════════════════════
+#  .gitignore — أمان أولاً
+#  القاعدة الحاكمة: **لا سرّ يُدفع إلى git أبداً**.
+# ══════════════════════════════════════════════════════════════════════
+
+# ── الأسرار (الأهم) ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+secrets/
+.credentials
+
+# ── ملفات بايثون ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ── بيئات افتراضية ────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── السجل والحالة (بيانات تشغيل لا شيفرة) ─────────────────────────────
+journal/*.jsonl
+journal/SUMMARY.md
+journal/anchor.json
+journal/halt_state.json
+journal/archive/
+
+# ── اللقطات المُولَّدة ────────────────────────────────────────────────
+data/snapshot_full.json
+data/snapshot_summary.json
+data/cache/
+data/*.tmp
+
+# ── ملفات المدقّقين المؤقتة (scratch) ────────────────────────────────
+scratch_*
+*_out.txt
+*_out.json
+cli_out.json
+cli_json.json
+*.out.txt
+*.out.json
+
+# ── التقارير المُولَّدة ───────────────────────────────────────────────
+reports/*.md
+!reports/.gitkeep
+
+# ── محرّرات وأنظمة ────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Node (لو أُضيفت واجهة) ───────────────────────────────────────────
+node_modules/
+.pnpm-store/
+.next/
+dist-web/
+*.log
+npm-debug.log*

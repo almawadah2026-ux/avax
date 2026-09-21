@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avax-desk"
+version = "1.0.0"
+description = "ديسك أفالانش — فريق وكلاء ذكاء اصطناعي لتحليل منظومة Avalanche/AVAX تحت دستور ملزم"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "AVAX Desk Architect" }]
+keywords = ["avalanche", "avax", "trading", "multi-agent", "risk-management", "research"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial :: Investment",
+  "Natural Language :: Arabic",
+]
+# لا اعتماديات خارجية — المكتبة القياسية فقط.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+avax-desk = "avax_desk.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
