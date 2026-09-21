@@ -443,7 +443,7 @@ phase("4 — القرار النهائي");
 
 const riskBlocked = !riskVerdict || riskVerdict.veto;
 
-const decision = await agent(
+let decision = await agent(
   [
     constitutionHeader("agents/14-orchestrator.md"),
     ``,
@@ -491,11 +491,57 @@ const decision = await agent(
   { label: "[14] المنسّق / مدير المحفظة", phase: "4 — القرار النهائي", schema: DECISION_SCHEMA }
 );
 
+// ── احتياط ثلاثي: إعادة محاولة ← قرار حتمي مشتق ─────────────────────────
+// ثغرة مُصلَحة: في تشغيل حقيقي على بيانات سوق أعاد `agent()` قيمة فارغة
+// للمنسّق، فأُسقطت الدورة كلها برسالة «فشل المنسّق». وكيل واحد لا يجوز أن
+// يُسقط تحليل أربعة عشر وكيلاً.
 if (!decision) {
-  return { ok: false, error: "فشل المنسّق في إصدار قرار", snapshot, opinions: validOpinions };
+  log("  ⚠️ المنسّق: المحاولة الأولى فشلت — إعادة بنص مختصر");
+  decision = await agent(
+    [
+      "أنت المنسّق (14) في ديسك أفالانش. أعد JSON فقط بلا شرح.",
+      `اتجاه مرجّح: ${proposedDirection} | اتفاق: ${(agreement * 100).toFixed(0)}%`,
+      `حكم المخاطر: ${riskBlocked ? "نقض نافذ — القرار ABSTAIN" : "موافقة بحجم " + riskVerdict.position_size_usd}`,
+      "ملخص الآراء: " + JSON.stringify(opinionsDigest.map((o) => ({
+        a: o.agent_id, d: o.direction, c: o.confidence, t: o.best_tier,
+      }))),
+      "أقوى حجة مضادة: " + String((redTeamOp || {}).thesis || "—").slice(0, 260),
+      "الحد الأدنى للثقة 65. املأ كل حقول المخطط."
+    ].join("\n"),
+    { label: "[14] المنسّق (محاولة 2)", phase: "4 — القرار النهائي", schema: DECISION_SCHEMA }
+  );
 }
 
-log(`القرار: ${decision.action} بثقة ${decision.confidence}`);
+if (!decision) {
+  // قرار احتياطي **حتمي** مشتق حسابياً من مخرجات الوكلاء (لا رأي جديد — المادة 1.4)
+  const b = !riskVerdict || riskVerdict.veto;
+  const sup0 = supporting.length ? supporting.reduce((s, o) => s + (o.confidence || 0), 0) / supporting.length : 0;
+  let conf = 0.45 * sup0 + 30 * agreement + 25 * Math.min(1, agreement);
+  conf = Math.max(0, Math.min(88, conf - (b ? 10 : 0)));
+  const act = (b || proposedDirection === "neutral" || conf < 65)
+    ? "ABSTAIN" : (proposedDirection === "bullish" ? "LONG" : "SHORT");
+  log("  ⛔ المنسّق فشل مرتين — يُشتق قرار حتمي من الأرقام (الدورة لا تسقط)");
+  decision = {
+    action: act,
+    confidence: Number(conf.toFixed(2)),
+    horizon: "أيام إلى أسابيع",
+    rationale: "[قرار احتياطي حتمي — فشل وكيل المنسّق فلم يُترك القرار معلّقاً] " +
+      `اتجاه مرجّح: ${proposedDirection} باتفاق ${(agreement * 100).toFixed(0)}%، ` +
+      `حكم المخاطر: ${b ? "نقض" : "موافقة"}، الثقة المحسوبة ${conf.toFixed(1)}. ` +
+      "مشتق حسابياً من مخرجات الوكلاء لا من رأي وكيل جديد (المادة 1.4).",
+    invalidation: b
+      ? "يبقى الامتناع حتى يزول سبب النقض ويصدر حكم مخاطر جديد غير منقوض."
+      : "يُبطل عند تجاوز حد الخسارة اليومية أو انقلاب التدفقات الأونشين.",
+    strongest_dissent: String(((redTeamOp || {}).dissent) || ((redTeamOp || {}).thesis) || "لم يُسجَّل مخالف.").slice(0, 600),
+    supporting_agents: supporting.map((o) => o.agent_id),
+    opposing_agents: directional.filter((o) => supporting.indexOf(o) < 0).map((o) => o.agent_id),
+    blocks: b ? ["نقض من وكيل المخاطر (المادة 5.1)"] : [],
+    size_usd: b ? 0 : (riskVerdict ? riskVerdict.position_size_usd : 0),
+    _fallback: true,
+  };
+}
+
+log(`القرار: ${decision.action} بثقة ${decision.confidence}${decision._fallback ? " (احتياطي)" : ""}`);
 
 // ── المرحلة 5: الذاكرة والتسجيل ─────────────────────────────────────────
 // ثغرة مُصلَحة: السكربت لم يُشغّل وكيل الذاكرة (15)، فلم يكن للسجل وكيل مسؤول —

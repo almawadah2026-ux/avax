@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ديسك أفالانش — لوحة المعاينة</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="logo">🏔️</span>
+    <div>
+      <h1>ديسك أفالانش</h1>
+      <p class="sub">فريق وكلاء تحليل لمنظومة Avalanche / AVAX — <strong>تحليل فقط، لا تنفيذ</strong></p>
+    </div>
+  </div>
+  <div class="conn" id="conn">جارٍ الاتصال…</div>
+</header>
+
+<div class="warn">
+  ⚠️ هذا تحليل آلي لأغراض البحث والتطوير — <strong>ليس نصيحة مالية</strong>.
+  الديسك لا ينفّذ صفقات حقيقية (CONSTITUTION.md المادة 0.2).
+</div>
+
+<section class="stats" id="stats"></section>
+
+<main>
+  <aside class="runs">
+    <div class="panel-head">
+      <h2>الدورات</h2>
+      <button id="refresh" class="btn">تحديث</button>
+    </div>
+    <ul id="run-list" class="run-list"><li class="muted">جارٍ التحميل…</li></ul>
+  </aside>
+
+  <section class="detail" id="detail">
+    <p class="muted">اختر دورة من القائمة لعرض تفاصيلها.</p>
+  </section>
+</main>
+
+<footer>
+  <span id="foot-meta"></span>
+  <span>القراءة عبر مفتاح <code>publishable</code> محميّ بـRLS — لا أسرار في هذه الصفحة.</span>
+</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
